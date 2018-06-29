@@ -8,8 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B185423A20E668990018047E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185423920E668990018047E /* AppDelegate.swift */; };
-		B185423C20E668990018047E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185423B20E668990018047E /* ViewController.swift */; };
-		B185423F20E668990018047E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B185423D20E668990018047E /* Main.storyboard */; };
+		B185423C20E668990018047E /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185423B20E668990018047E /* MainViewController.swift */; };
 		B185424120E6689A0018047E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B185424020E6689A0018047E /* Assets.xcassets */; };
 		B185424420E6689A0018047E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B185424220E6689A0018047E /* LaunchScreen.storyboard */; };
 		B185424F20E6689A0018047E /* FlickrWallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185424E20E6689A0018047E /* FlickrWallTests.swift */; };
@@ -28,8 +27,7 @@
 /* Begin PBXFileReference section */
 		B185423620E668990018047E /* FlickrWall.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlickrWall.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B185423920E668990018047E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B185423B20E668990018047E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B185423E20E668990018047E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B185423B20E668990018047E /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		B185424020E6689A0018047E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B185424320E6689A0018047E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B185424520E6689A0018047E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -78,8 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				B185423920E668990018047E /* AppDelegate.swift */,
-				B185423B20E668990018047E /* ViewController.swift */,
-				B185423D20E668990018047E /* Main.storyboard */,
+				B185423B20E668990018047E /* MainViewController.swift */,
 				B185424020E6689A0018047E /* Assets.xcassets */,
 				B185424220E6689A0018047E /* LaunchScreen.storyboard */,
 				B185424520E6689A0018047E /* Info.plist */,
@@ -179,7 +176,6 @@
 			files = (
 				B185424420E6689A0018047E /* LaunchScreen.storyboard in Resources */,
 				B185424120E6689A0018047E /* Assets.xcassets in Resources */,
-				B185423F20E668990018047E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +193,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B185423C20E668990018047E /* ViewController.swift in Sources */,
+				B185423C20E668990018047E /* MainViewController.swift in Sources */,
 				B185423A20E668990018047E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -221,14 +217,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B185423D20E668990018047E /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B185423E20E668990018047E /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		B185424220E6689A0018047E /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -361,6 +349,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = R2ZL7S7Z67;
 				INFOPLIST_FILE = FlickrWall/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -379,6 +368,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = R2ZL7S7Z67;
 				INFOPLIST_FILE = FlickrWall/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
