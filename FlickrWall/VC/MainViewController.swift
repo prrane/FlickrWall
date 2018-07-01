@@ -34,7 +34,11 @@ class MainViewController: UIViewController {
     super.viewDidLoad()
 
     cellSize = updatedItemSize()
-    title = NSLocalizedString("Flickr Feed", comment: "Main screen title for flickr app") 
+    title = NSLocalizedString("Flickr Feed", comment: "Main screen title for flickr app")
+
+    NetworkManager().fetchPhotos(for: "cat", completion: {_,_ in 
+      
+    })
   }
 
   override func didReceiveMemoryWarning() {
