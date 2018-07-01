@@ -10,7 +10,7 @@ import UIKit
 
 class PhotosDatasource: NSObject {
 
-  fileprivate var kPhotosDatasourceContext = 1
+  private var kPhotosDatasourceContext = 1
 
   var datasourceUpdatedCallback: (() -> Void)?
   let searchManager = SearchManager()
@@ -50,7 +50,19 @@ extension PhotosDatasource: UICollectionViewDataSource {
 
   public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.reuseIdentifier, for: indexPath) as! ImageCell
-    
+
+    guard let photo = SearchResultsCache.shared.item(forIndexPath: indexPath) else {
+      cell.setupWith(image: nil, id: "")
+      return cell
+    }
+
+    guard let image = PhotosCache.shared.photo(for: photo.id) else {
+      cell.setupWith(image: nil, id: photo.id)
+      PhotoDownloadManager.shared.downloadPhoto(with: photo)
+      return cell
+    }
+
+    cell.setupWith(image: image, id: photo.id)
     return cell
   }
 
@@ -65,7 +77,9 @@ extension PhotosDatasource: UICollectionViewDataSourcePrefetching {
       return
     }
 
+    // Page is section + 1; we want next section
     let nextPage = lastSection + 2
+
     if SearchResultsCache.shared.shouldPredetch(forPage: nextPage) && nextPage > searchManager.currentPage {
       searchManager.getNextpage()
     }

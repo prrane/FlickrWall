@@ -18,6 +18,15 @@ class SearchResultsCache: NSObject {
   private var cache = [Int: SearchResults]()
   private var mostRecentSearchResults: SearchResults?
 
+  @objc open dynamic var isUpdated: Bool = false {
+    willSet {
+      willChangeValue(forKey: "isUpdated")
+    }
+    didSet {
+      didChangeValue(forKey: "isUpdated")
+    }
+  }
+  
   func invalidateCache() {
     cache.removeAll()
     isUpdated = true
@@ -67,15 +76,6 @@ class SearchResultsCache: NSObject {
 
   func numberOfPhotos(for page: Int) -> Int {
     return cache[page]?.photos.count ?? 0
-  }
-
-  @objc open dynamic var isUpdated: Bool = false {
-    willSet {
-      willChangeValue(forKey: "isUpdated")
-    }
-    didSet {
-      didChangeValue(forKey: "isUpdated")
-    }
   }
 
 }

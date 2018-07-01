@@ -11,19 +11,20 @@ import UIKit
 class ImageCollectionView: UIView {
 
   struct Constants {
-    static let minimumXPadding: CGFloat = 5.0
+    static let minimumPadding: CGFloat = 5.0
     static let maxCellsPerRow: Int = 3
   }
 
   let collectionView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
-    layout.minimumInteritemSpacing = Constants.minimumXPadding
-    layout.minimumLineSpacing = Constants.minimumXPadding
+    layout.minimumInteritemSpacing = Constants.minimumPadding
+    layout.minimumLineSpacing = Constants.minimumPadding
+
     layout.scrollDirection = .vertical
     
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.reuseIdentifier)
-
+    collectionView.backgroundColor = .white
     return collectionView
   }()
 
@@ -36,6 +37,15 @@ class ImageCollectionView: UIView {
     collectionView.dataSource = dataSource
     collectionView.delegate = delegate
     collectionView.prefetchDataSource = prefetchDataSource
+  }
+
+  func setupCell(with photoId: String, image: UIImage) {
+    let filteredCells = collectionView.visibleCells.filter { ($0 as! ImageCell).id == photoId }
+    guard let cell = filteredCells.first as? ImageCell else {
+      return
+    }
+
+    cell.setupWith(image: image)
   }
 
   required init?(coder aDecoder: NSCoder) {

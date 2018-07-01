@@ -10,7 +10,7 @@ import Foundation
 
 class SearchManager {
 
-  private let queue = SearchQueue()
+  private let queue = AsyncQueue(named: "com.prrane.flickr.search")
 
   var keyword: String = "" {
     didSet {

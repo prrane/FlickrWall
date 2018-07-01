@@ -32,26 +32,98 @@ class SearchOperation: AsyncOperation {
   }
 
   private func execute() {
-    NetworkManager.shared.fetchPhotos(for: keyword, page: currentPage) { (response: APIResponse?, error: String?) in
+    fetchPhotos(for: keyword, page: currentPage) { [weak self] (response: APIResponse?, error: String?) in
 
-      self.state = .finished
+      self?.state = .finished
 
       guard error == nil else {
+        print("Error while searching: \(error!)")
         return
       }
 
-      guard let response = response, response.errorCode == nil else {
+      guard response != nil, response?.errorCode == nil else {
+        print("Search failed with error code: \(String(describing: response?.errorCode!))")
         return
       }
 
-      guard let searchResults = response.results else {
+      guard let searchResults = response?.results else {
+        print("No search results returned for keyword: \(String(describing: self?.keyword))")
         return
       }
 
-      print("Fetched page: \(searchResults.currentPage), total : \(searchResults.totalPages)")
+      print("Fetched page: \(searchResults.currentPage), total pages: \(searchResults.totalPages)")
 
       SearchResultsCache.shared.add(results: searchResults)      
     }
+  }
+
+}
+
+//MARK: - Download Helpers
+extension SearchOperation {
+
+  // Prepate the search request
+  private func flickrURLRequest(for keyword: String, page: Int = 1) -> URLRequest? {
+    let queryItems = [
+      URLQueryItem(name: "method", value: "flickr.photos.search"),
+      URLQueryItem(name: "api_key", value: "1f2d63bddf5c886d8ededcdcfbe8f40c"),
+      URLQueryItem(name: "per_page", value: "21"),
+      URLQueryItem(name: "page", value: "\(page)"),
+      URLQueryItem(name: "format", value: "json"),
+      URLQueryItem(name: "tags", value: keyword),
+      URLQueryItem(name: "nojsoncallback", value: "1"),
+      ]
+
+    var components = URLComponents()
+    components.scheme = "https"
+    components.host = "api.flickr.com"
+    components.path = "/services/rest/"
+    components.queryItems = queryItems
+
+    guard let url = components.url else {
+      return nil
+    }
+
+    return URLRequest(url: url)
+  }
+
+  private func fetchPhotos(for keyword: String, page: Int, completion: @escaping (_ response: APIResponse?, _ error: String?) -> Void) {
+
+    guard let urlRequest = flickrURLRequest(for: keyword, page: page) else {
+      return
+    }
+
+    URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
+      guard error == nil else {
+        completion(nil, error!.localizedDescription)
+        return
+      }
+
+      guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+        completion(nil, "Failed to get response from server, please try later")
+        return
+      }
+
+      guard statusCode >= 200 && statusCode < 300 else {
+        completion(nil, "Server request failed, please try later")
+        return
+      }
+
+      guard let data = data else {
+        completion(nil, "Failed to get images data from server, please try later")
+        return
+      }
+
+      do {
+        let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
+        completion(apiResponse, nil)
+      }
+      catch let error {
+        print(error)
+        completion(nil, error.localizedDescription)
+      }
+
+      }.resume()
   }
 
 }

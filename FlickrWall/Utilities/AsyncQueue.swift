@@ -8,21 +8,21 @@
 
 import Foundation
 
-public class SearchQueue {
+public class AsyncQueue {
   private let operationQueue = OperationQueue()
 
-  init () {
-    operationQueue.maxConcurrentOperationCount = 1
+  init(named name: String, maxConcurrentOperationCount: Int = 1) {
+    operationQueue.maxConcurrentOperationCount = maxConcurrentOperationCount
     operationQueue.qualityOfService = .userInteractive
-    operationQueue.name = "Search Queue"
+    operationQueue.name = name
   }
 
   func cancelAllOperations() {
     operationQueue.cancelAllOperations()
   }
 
-  func addOperation(_ searchOperation: SearchOperation) {
-    operationQueue.addOperation(searchOperation)
+  func addOperation(_ operation: Operation) {
+    operationQueue.addOperation(operation)
   }
 
 }

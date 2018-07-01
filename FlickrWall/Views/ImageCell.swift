@@ -18,6 +18,8 @@ class ImageCell: UICollectionViewCell {
     return String(describing: type(of: self))
   }
 
+  var id: String = ""
+
   let imageView: UIImageView = {
     let imageView: UIImageView = UIImageView(image: Constants.placeHolderImage)
     imageView.contentMode = .scaleAspectFit
@@ -42,21 +44,30 @@ class ImageCell: UICollectionViewCell {
     super.init(frame: frame)
 
     backgroundColor = .white
+    contentView.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
     contentView.addSubview(imageView)
     contentView.addSubview(loadingLabel)
   }
 
-  func setupWith(image: UIImage?) {
+  func setupWith(image: UIImage?, id: String) {
+    self.id = id
+    
     guard let image = image else {
       imageView.image = nil
       imageView.isHidden = true
+      contentView.layer.borderWidth = 1.0 / UIScreen.main.scale
       loadingLabel.isHidden = false
       return
     }
 
+    contentView.layer.borderWidth = 0
     imageView.image = image
     imageView.isHidden = false
     loadingLabel.isHidden = true
+  }
+
+  func setupWith(image: UIImage) {
+    setupWith(image: image, id: id)
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -66,7 +77,7 @@ class ImageCell: UICollectionViewCell {
   override func layoutSubviews() {
     super.layoutSubviews()
 
-    loadingLabel.frame = contentView.frame.insetBy(dx: 5, dy: 5)
+    loadingLabel.frame = contentView.frame
     imageView.frame = contentView.frame.insetBy(dx: 5, dy: 5)
   }
 
