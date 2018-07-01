@@ -23,8 +23,11 @@ class ImageCollectionView: UIView {
     layout.scrollDirection = .vertical
     
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.reuseIdentifier)
     collectionView.backgroundColor = .white
+
+    collectionView.register(ImageCell.self, forCellWithReuseIdentifier: ImageCell.reuseIdentifier)
+    collectionView.register(SearchBarHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: SearchBarHeaderView.reuseIdentifier)
+
     return collectionView
   }()
 
@@ -60,6 +63,16 @@ class ImageCollectionView: UIView {
     super.layoutSubviews()
 
     collectionView.frame = frame
+  }
+
+  func scrollToFirstRow() {
+    if collectionView.numberOfSections > 0, collectionView.numberOfItems(inSection: 0) > 1 {
+      var offset = collectionView.contentOffset
+      if offset.y < 0 {
+        offset.y = 0
+      }
+      collectionView.setContentOffset(offset, animated: true)
+    }
   }
 
 }

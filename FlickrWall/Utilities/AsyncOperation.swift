@@ -11,7 +11,7 @@ import Foundation
 open class AsyncOperation: Operation {
 
   @objc public enum State: Int {
-    case ready, executing, finished
+    case ready, executing, finished, error
 
     var keyPath: String {
       switch self {
@@ -21,6 +21,8 @@ open class AsyncOperation: Operation {
         return "isExecuting"
       case .finished:
         return "isFinished"
+      case .error:
+        return "isError"
       }
     }
   }

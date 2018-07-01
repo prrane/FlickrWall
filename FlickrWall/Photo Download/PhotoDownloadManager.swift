@@ -10,17 +10,32 @@ import Foundation
 
 class PhotoDownloadManager: NSObject {
 
-  static let shared = PhotoDownloadManager()
-
   private var kPhotosDownloadContext = 1
 
   private let downloadQueue = AsyncQueue(named: "com.prrane.flickr.photo.download", maxConcurrentOperationCount: 5)
 
   private let dictionaryQueue = DispatchQueue(label: "com.prrane.flickr.photo.download.dictionary")
 
-  var photoIdToDownloadOperationsMap = [String: PhotoDownloadOperation]()
+  private var photoIdToDownloadOperationsMap = [String: PhotoDownloadOperation]()
+
+  // Used to start/stop downloading
+
+  var okToProceed = false
+
+  func cancelAllOperations(shouldResetCache: Bool = false) {
+    downloadQueue.cancelAllOperations()
+    okToProceed = false
+
+    if shouldResetCache {
+      PhotosCache.shared.invalidateCache()
+    }
+  }
 
   func downloadPhoto(with photoModel: Photo) {
+    guard okToProceed else {
+      print("Not ok to proceed photo download")
+      return
+    }
 
     var isDownloadForProvidedPhotoModelInProgress = false
     dictionaryQueue.sync {

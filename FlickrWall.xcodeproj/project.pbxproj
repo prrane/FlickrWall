@@ -24,6 +24,7 @@
 		B185427620E9194B0018047E /* PhotoDownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185427520E9194B0018047E /* PhotoDownloadManager.swift */; };
 		B185427920E91F4D0018047E /* PhotosCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185427820E91F4D0018047E /* PhotosCache.swift */; };
 		B185427B20E929A70018047E /* PhotoDownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185427A20E929A70018047E /* PhotoDownloadOperation.swift */; };
+		B185427E20E945330018047E /* SearchBarHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B185427D20E945330018047E /* SearchBarHeaderView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		B185427520E9194B0018047E /* PhotoDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDownloadManager.swift; sourceTree = "<group>"; };
 		B185427820E91F4D0018047E /* PhotosCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCache.swift; sourceTree = "<group>"; };
 		B185427A20E929A70018047E /* PhotoDownloadOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDownloadOperation.swift; sourceTree = "<group>"; };
+		B185427D20E945330018047E /* SearchBarHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,12 +102,12 @@
 			isa = PBXGroup;
 			children = (
 				B185423920E668990018047E /* AppDelegate.swift */,
-				B185427C20E940000018047E /* Utilities */,
-				B185427220E8EA700018047E /* Photo Download */,
-				B185427120E8E1BF0018047E /* Search */,
-				B185425F20E7401D0018047E /* Model */,
-				B185425D20E73FF30018047E /* VC */,
 				B185425E20E740120018047E /* Views */,
+				B185425D20E73FF30018047E /* Controllers */,
+				B185425F20E7401D0018047E /* Model */,
+				B185427120E8E1BF0018047E /* Search */,
+				B185427220E8EA700018047E /* Photo Download */,
+				B185427C20E940000018047E /* Utilities */,
 				B185424020E6689A0018047E /* Assets.xcassets */,
 				B185424220E6689A0018047E /* LaunchScreen.storyboard */,
 				B185424520E6689A0018047E /* Info.plist */,
@@ -122,13 +124,13 @@
 			path = FlickrWallTests;
 			sourceTree = "<group>";
 		};
-		B185425D20E73FF30018047E /* VC */ = {
+		B185425D20E73FF30018047E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				B185423B20E668990018047E /* MainViewController.swift */,
 				B185426F20E8CB3F0018047E /* PhotosDatasource.swift */,
 			);
-			path = VC;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		B185425E20E740120018047E /* Views */ = {
@@ -136,6 +138,7 @@
 			children = (
 				B185425A20E66C3B0018047E /* ImageCell.swift */,
 				B185425920E66C3B0018047E /* ImageCollectionView.swift */,
+				B185427D20E945330018047E /* SearchBarHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				B185426C20E8C00A0018047E /* AsyncQueue.swift in Sources */,
 				B185423C20E668990018047E /* MainViewController.swift in Sources */,
 				B185425C20E66C3C0018047E /* ImageCell.swift in Sources */,
+				B185427E20E945330018047E /* SearchBarHeaderView.swift in Sources */,
 				B185427020E8CB3F0018047E /* PhotosDatasource.swift in Sources */,
 				B185426820E8BAEA0018047E /* SearchOperation.swift in Sources */,
 				B185427920E91F4D0018047E /* PhotosCache.swift in Sources */,

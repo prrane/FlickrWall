@@ -18,7 +18,7 @@ class ImageCell: UICollectionViewCell {
     return String(describing: type(of: self))
   }
 
-  var id: String = ""
+  var id: String? = nil
 
   let imageView: UIImageView = {
     let imageView: UIImageView = UIImageView(image: Constants.placeHolderImage)
@@ -45,8 +45,17 @@ class ImageCell: UICollectionViewCell {
 
     backgroundColor = .white
     contentView.layer.borderColor = UIColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1.0).cgColor
+    contentView.layer.borderWidth = 1.0 / UIScreen.main.scale
+    
     contentView.addSubview(imageView)
     contentView.addSubview(loadingLabel)
+  }
+
+  override func prepareForReuse() {
+    imageView.image = nil
+    imageView.isHidden = true
+    loadingLabel.isHidden = false
+    self.id = nil
   }
 
   func setupWith(image: UIImage?, id: String) {
@@ -55,19 +64,19 @@ class ImageCell: UICollectionViewCell {
     guard let image = image else {
       imageView.image = nil
       imageView.isHidden = true
-      contentView.layer.borderWidth = 1.0 / UIScreen.main.scale
       loadingLabel.isHidden = false
       return
     }
 
-    contentView.layer.borderWidth = 0
     imageView.image = image
     imageView.isHidden = false
     loadingLabel.isHidden = true
   }
 
   func setupWith(image: UIImage) {
-    setupWith(image: image, id: id)
+    if let photoId = id {
+      setupWith(image: image, id: photoId)
+    }
   }
 
   required init?(coder aDecoder: NSCoder) {

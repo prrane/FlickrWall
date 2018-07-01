@@ -28,7 +28,9 @@ class MainViewController: UIViewController {
     super.init(nibName: nil, bundle: nil)
 
     datasource.datasourceUpdatedCallback = reload
-    
+    datasource.searchBarDelegateProxy = self
+
+    NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.showError(notification:)), name: NSNotification.Name(rawValue: SearchManager.Constants.errorNotificationKey), object: nil)
     PhotosCache.shared.addObserver(self, forKeyPath: #keyPath(PhotosCache.downloaded), options: .new, context: &kMainViewControllerContext)
   }
 
@@ -45,6 +47,8 @@ class MainViewController: UIViewController {
 
     cellSize = updatedItemSize()
     title = NSLocalizedString("Flickr Feed", comment: "Main screen title for flickr app")
+
+    imageCollectionView.scrollToFirstRow()
   }
 
   func reload() {
@@ -56,6 +60,17 @@ class MainViewController: UIViewController {
 
     // Clear all photos
     PhotosCache.shared.invalidateCache()
+  }
+
+  @objc func showError(notification: Notification) {
+    guard let errorMessage = notification.userInfo?[SearchManager.Constants.errorMessageKey] as? String else {
+      return
+    }
+
+    let alert = UIAlertController(title: nil, message: errorMessage, preferredStyle: UIAlertControllerStyle.alert)
+    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Title for OK button from error alert"), style: UIAlertActionStyle.default, handler: nil))
+
+    present(alert, animated: true, completion: nil)
   }
 
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -110,5 +125,25 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
     return UIEdgeInsets(top: ImageCollectionView.Constants.minimumPadding, left: 0, bottom: 0, right: 0)
   }
-  
+
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    guard section == 0 else {
+      return .zero
+    }
+
+    return CGSize(width: collectionView.frame.size.width, height: SearchBarHeaderView.Constants.defaultHeight)
+  }
 }
+
+extension MainViewController: UISearchBarDelegate {
+
+  public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    imageCollectionView.scrollToFirstRow()
+  }
+
+  public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    imageCollectionView.scrollToFirstRow()
+  }
+
+}
+

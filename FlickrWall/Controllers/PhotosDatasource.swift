@@ -13,7 +13,9 @@ class PhotosDatasource: NSObject {
   private var kPhotosDatasourceContext = 1
 
   var datasourceUpdatedCallback: (() -> Void)?
+  var searchBarDelegateProxy: UISearchBarDelegate?
   let searchManager = SearchManager()
+  let photoManager = PhotoDownloadManager()
 
   override init() {
     super.init()
@@ -30,6 +32,7 @@ class PhotosDatasource: NSObject {
 
     if keyPath == #keyPath(SearchResultsCache.isUpdated) {
       DispatchQueue.main.async { [weak self] in
+        self?.photoManager.okToProceed = true
         self?.datasourceUpdatedCallback?()
       }
     }
@@ -52,18 +55,28 @@ extension PhotosDatasource: UICollectionViewDataSource {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageCell.reuseIdentifier, for: indexPath) as! ImageCell
 
     guard let photo = SearchResultsCache.shared.item(forIndexPath: indexPath) else {
-      cell.setupWith(image: nil, id: "")
       return cell
     }
 
     guard let image = PhotosCache.shared.photo(for: photo.id) else {
       cell.setupWith(image: nil, id: photo.id)
-      PhotoDownloadManager.shared.downloadPhoto(with: photo)
+      photoManager.downloadPhoto(with: photo)
       return cell
     }
 
     cell.setupWith(image: image, id: photo.id)
     return cell
+  }
+
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    guard indexPath.section == 0,  kind == UICollectionElementKindSectionHeader else {
+      return UICollectionReusableView()
+    }
+
+    let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: SearchBarHeaderView.reuseIdentifier, for: indexPath) as! SearchBarHeaderView
+    headerView.setup(withDelegate: self)
+
+    return headerView
   }
 
 }
@@ -83,6 +96,25 @@ extension PhotosDatasource: UICollectionViewDataSourcePrefetching {
     if SearchResultsCache.shared.shouldPredetch(forPage: nextPage) && nextPage > searchManager.currentPage {
       searchManager.getNextpage()
     }
+  }
+
+}
+
+extension PhotosDatasource: UISearchBarDelegate {
+
+  public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
+    searchBarDelegateProxy?.searchBarCancelButtonClicked?(searchBar)
+  }
+
+  public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    if let text = searchBar.text {
+      photoManager.cancelAllOperations(shouldResetCache: true)
+      searchManager.keyword = text
+    }
+
+    searchBar.resignFirstResponder()
+    searchBarDelegateProxy?.searchBarSearchButtonClicked?(searchBar)
   }
 
 }

@@ -12,6 +12,7 @@ class SearchOperation: AsyncOperation {
 
   let currentPage: Int
   let keyword: String
+  var errorMessage: String?
 
   init(with keyword: String, page: Int = 0)  {
     self.keyword = keyword
@@ -34,26 +35,28 @@ class SearchOperation: AsyncOperation {
   private func execute() {
     fetchPhotos(for: keyword, page: currentPage) { [weak self] (response: APIResponse?, error: String?) in
 
-      self?.state = .finished
-
       guard error == nil else {
-        print("Error while searching: \(error!)")
+        self?.errorMessage = "Error while searching: \(error!)"
+        self?.state = .finished
         return
       }
 
       guard response != nil, response?.errorCode == nil else {
-        print("Search failed with error code: \(String(describing: response?.errorCode!))")
+        self?.errorMessage = "Search failed with error code: \(String(describing: response?.errorCode!))"
+        self?.state = .finished
         return
       }
 
       guard let searchResults = response?.results else {
-        print("No search results returned for keyword: \(String(describing: self?.keyword))")
+        self?.errorMessage = "No search results returned for keyword: \(String(describing: self?.keyword))"
+        self?.state = .finished
         return
       }
 
       print("Fetched page: \(searchResults.currentPage), total pages: \(searchResults.totalPages)")
 
-      SearchResultsCache.shared.add(results: searchResults)      
+      SearchResultsCache.shared.add(results: searchResults)
+      self?.state = .finished
     }
   }
 
