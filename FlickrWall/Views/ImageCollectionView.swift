@@ -29,16 +29,21 @@ class ImageCollectionView: UIView {
 
   //MARK: -
   
-  init(with dataSource: UICollectionViewDataSource, delegate: UICollectionViewDelegate) {
+  init(withDataSource dataSource: UICollectionViewDataSource, delegate: UICollectionViewDelegate, prefetchDataSource: UICollectionViewDataSourcePrefetching?) {
     super.init(frame: .zero)
 
     addSubview(collectionView)
     collectionView.dataSource = dataSource
     collectionView.delegate = delegate
+    collectionView.prefetchDataSource = prefetchDataSource
   }
 
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+
+  func reload() {
+    collectionView.reloadData()
   }
 
   override func layoutSubviews() {

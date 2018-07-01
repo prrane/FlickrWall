@@ -13,6 +13,12 @@ struct Photo: Codable {
   let secret: String
   let server: String
   let farm: Int
+
+  var downloadURL: URL? {
+    //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
+    let url = "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret).jpg"
+    return URL(string: url)
+  }
 }
 
 struct SearchResults: Codable {

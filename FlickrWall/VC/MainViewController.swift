@@ -11,6 +11,7 @@ import UIKit
 class MainViewController: UIViewController {
 
   var cellSize: CGSize = .zero
+  let datasource = PhotosDatasource()
 
   struct Constants {
     static let defaultNumberOfRows = 15
@@ -18,8 +19,14 @@ class MainViewController: UIViewController {
 
   //MARK: -
 
+  private var imageCollectionView: ImageCollectionView {
+    return view as! ImageCollectionView
+  }
+
   init() {
     super.init(nibName: nil, bundle: nil)
+
+    datasource.datasourceUpdatedCallback = reload
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -27,7 +34,7 @@ class MainViewController: UIViewController {
   }
 
   override func loadView() {
-    self.view = ImageCollectionView(with: self, delegate: self)
+    self.view = ImageCollectionView(withDataSource: datasource, delegate: self, prefetchDataSource: datasource)
   }
 
   override func viewDidLoad() {
@@ -35,10 +42,10 @@ class MainViewController: UIViewController {
 
     cellSize = updatedItemSize()
     title = NSLocalizedString("Flickr Feed", comment: "Main screen title for flickr app")
+  }
 
-    NetworkManager().fetchPhotos(for: "cat", completion: {_,_ in 
-      
-    })
+  func reload() {
+    imageCollectionView.reload()
   }
 
   override func didReceiveMemoryWarning() {
