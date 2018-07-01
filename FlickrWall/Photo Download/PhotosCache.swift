@@ -14,12 +14,12 @@ class PhotosCache: NSObject {
   private var cache = [String: UIImage?]()
   private let cacheQueue = DispatchQueue(label: "com.prrane.flickr.photo.update.cache")
 
-  @objc open dynamic var downloaded: String = "" {
+  @objc open dynamic var didCached: String = "" {
     willSet {
-      willChangeValue(forKey: "isDownloaded")
+      willChangeValue(forKey: "didCached")
     }
     didSet {
-      didChangeValue(forKey: "isDownloaded")
+      didChangeValue(forKey: "didCached")
     }
   }
 
@@ -34,7 +34,7 @@ class PhotosCache: NSObject {
     }
     
     cache[id] = image
-    downloaded = id
+    didCached = id
   }
 
   func photo(for id: String) -> UIImage? {

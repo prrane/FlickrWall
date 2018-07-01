@@ -11,18 +11,18 @@ import UIKit
 class MainViewController: UIViewController {
 
   var cellSize: CGSize = .zero
-  let datasource = PhotosDatasource()
+  let datasource = FlickrDatasource()
   private var kMainViewControllerContext = 1
 
   struct Constants {
     static let defaultNumberOfRows = 15
   }
 
-  //MARK: -
-
   private var imageCollectionView: ImageCollectionView {
     return view as! ImageCollectionView
   }
+
+  //MARK: -
 
   init() {
     super.init(nibName: nil, bundle: nil)
@@ -31,7 +31,7 @@ class MainViewController: UIViewController {
     datasource.searchBarDelegateProxy = self
 
     NotificationCenter.default.addObserver(self, selector: #selector(MainViewController.showError(notification:)), name: NSNotification.Name(rawValue: SearchManager.Constants.errorNotificationKey), object: nil)
-    PhotosCache.shared.addObserver(self, forKeyPath: #keyPath(PhotosCache.downloaded), options: .new, context: &kMainViewControllerContext)
+    PhotosCache.shared.addObserver(self, forKeyPath: #keyPath(PhotosCache.didCached), options: .new, context: &kMainViewControllerContext)
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -51,15 +51,40 @@ class MainViewController: UIViewController {
     imageCollectionView.scrollToFirstRow()
   }
 
-  func reload() {
-    imageCollectionView.reload()
-  }
-
   override func didReceiveMemoryWarning() {
     super.didReceiveMemoryWarning()
 
     // Clear all photos
     PhotosCache.shared.invalidateCache()
+  }
+
+  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    guard context == &kMainViewControllerContext else {
+      super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+      return
+    }
+
+    if keyPath == #keyPath(PhotosCache.didCached) {
+      guard let photoId = change?[NSKeyValueChangeKey.newKey] as? String else {
+        return
+      }
+
+      DispatchQueue.main.async {
+        self.setupCell(with: photoId)
+      }
+    }
+  }
+
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    cellSize = updatedItemSize()
+  }
+
+
+  //MARK: - Helpers
+
+  func reload() {
+    imageCollectionView.reload()
   }
 
   @objc func showError(notification: Notification) {
@@ -73,34 +98,12 @@ class MainViewController: UIViewController {
     present(alert, animated: true, completion: nil)
   }
 
-  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    guard context == &kMainViewControllerContext else {
-      super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-      return
-    }
-
-    if keyPath == #keyPath(PhotosCache.downloaded) {
-      guard let photoId = change?[NSKeyValueChangeKey.newKey] as? String else {
-        return
-      }
-
-      DispatchQueue.main.async {
-        self.setupCell(with: photoId)
-      }
-    }
-  }
-
   func setupCell(with photoId: String) {
     guard let image = PhotosCache.shared.photo(for: photoId) else {
       return
     }
 
     imageCollectionView.setupCell(with: photoId, image: image)
-  }
-
-  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
-    cellSize = updatedItemSize()
   }
 
   private func updatedItemSize() -> CGSize {
@@ -112,6 +115,7 @@ class MainViewController: UIViewController {
   }
 
 }
+
 
 //MARK: - UICollectionViewDelegateFlowLayout
 
@@ -134,6 +138,9 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     return CGSize(width: collectionView.frame.size.width, height: SearchBarHeaderView.Constants.defaultHeight)
   }
 }
+
+
+//MARK: - UISearchBarDelegate - Proxy
 
 extension MainViewController: UISearchBarDelegate {
 

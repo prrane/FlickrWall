@@ -67,10 +67,11 @@ extension SearchOperation {
 
   // Prepate the search request
   private func flickrURLRequest(for keyword: String, page: Int = 1) -> URLRequest? {
+    let imagesToBeFetchedPerPage = ImageCollectionView.Constants.maxCellsPerRow * 10
     let queryItems = [
       URLQueryItem(name: "method", value: "flickr.photos.search"),
       URLQueryItem(name: "api_key", value: "1f2d63bddf5c886d8ededcdcfbe8f40c"),
-      URLQueryItem(name: "per_page", value: "21"),
+      URLQueryItem(name: "per_page", value: "\(imagesToBeFetchedPerPage)"),
       URLQueryItem(name: "page", value: "\(page)"),
       URLQueryItem(name: "format", value: "json"),
       URLQueryItem(name: "tags", value: keyword),

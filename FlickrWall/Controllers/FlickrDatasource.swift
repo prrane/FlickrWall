@@ -1,5 +1,5 @@
 //
-//  PhotosDatasource.swift
+//  FlickrDatasource.swift
 //  FlickrWall
 //
 //  Created by Prashant Rane on 01/07/18.
@@ -8,24 +8,30 @@
 
 import UIKit
 
-class PhotosDatasource: NSObject {
+class FlickrDatasource: NSObject {
 
-  private var kPhotosDatasourceContext = 1
+  // KVO
+  private var kFlickrDatasourceContext = 1
 
+  // ivars to be set during initialization
   var datasourceUpdatedCallback: (() -> Void)?
   var searchBarDelegateProxy: UISearchBarDelegate?
+
   let searchManager = SearchManager()
   let photoManager = PhotoDownloadManager()
 
+  //MARK: -
+  
   override init() {
     super.init()
 
+    // init with some default search keyword
     searchManager.keyword = "cat"
-    SearchResultsCache.shared.addObserver(self, forKeyPath:#keyPath(SearchResultsCache.isUpdated), options: .new, context: &kPhotosDatasourceContext)
+    SearchResultsCache.shared.addObserver(self, forKeyPath:#keyPath(SearchResultsCache.isUpdated), options: .new, context: &kFlickrDatasourceContext)
   }
 
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    guard context == &kPhotosDatasourceContext else {
+    guard context == &kFlickrDatasourceContext else {
       super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
       return
     }
@@ -37,11 +43,12 @@ class PhotosDatasource: NSObject {
       }
     }
   }
-
 }
 
-// MARK:- UICollectionViewDataSource
-extension PhotosDatasource: UICollectionViewDataSource {
+
+//MARK:- UICollectionViewDataSource
+
+extension FlickrDatasource: UICollectionViewDataSource {
 
   public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return SearchResultsCache.shared.numberOfPhotos(for: section+1)
@@ -81,9 +88,10 @@ extension PhotosDatasource: UICollectionViewDataSource {
 
 }
 
-// MARK:- UICollectionViewDataSourcePrefetching
 
-extension PhotosDatasource: UICollectionViewDataSourcePrefetching {
+//MARK:- UICollectionViewDataSourcePrefetching
+
+extension FlickrDatasource: UICollectionViewDataSourcePrefetching {
 
   public func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
     guard let lastSection = indexPaths.last?.section else {
@@ -100,7 +108,10 @@ extension PhotosDatasource: UICollectionViewDataSourcePrefetching {
 
 }
 
-extension PhotosDatasource: UISearchBarDelegate {
+
+//MARK:- UISearchBarDelegate
+
+extension FlickrDatasource: UISearchBarDelegate {
 
   public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
     searchBar.resignFirstResponder()

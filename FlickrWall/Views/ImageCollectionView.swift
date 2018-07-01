@@ -12,7 +12,7 @@ class ImageCollectionView: UIView {
 
   struct Constants {
     static let minimumPadding: CGFloat = 5.0
-    static let maxCellsPerRow: Int = 3
+    static let maxCellsPerRow: Int = 3 // should be capped to 5 IMO
   }
 
   let collectionView: UICollectionView = {

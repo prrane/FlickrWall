@@ -8,7 +8,7 @@
 
 import Foundation
 
-// MARK: - Properties
+//MARK: - Properties
 
 class SearchResultsCache: NSObject {
 
@@ -26,7 +26,7 @@ class SearchResultsCache: NSObject {
       didChangeValue(forKey: "isUpdated")
     }
   }
-  
+
   func invalidateCache() {
     cache.removeAll()
     isUpdated = true

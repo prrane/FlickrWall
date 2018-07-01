@@ -16,7 +16,7 @@ struct Photo: Codable {
 
   var downloadURL: URL? {
     //https://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
-    let url = "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret).jpg"
+    let url = "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret)_q.jpg"
     return URL(string: url)
   }
 }
